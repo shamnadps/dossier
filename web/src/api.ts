@@ -6,7 +6,11 @@ import type {
   AuthResponse,
 } from "./types";
 
+// App endpoints (accounts, research, activities) live in one Xano API group;
+// the auth endpoints live in Xano's built-in Authentication group, which has a
+// different canonical, hence a second base URL.
 const BASE = import.meta.env.VITE_API_BASE ?? "";
+const AUTH_BASE = import.meta.env.VITE_AUTH_BASE ?? BASE;
 
 const TOKEN_KEY = "dossier_token";
 
@@ -37,15 +41,15 @@ class ApiError extends Error {
 
 async function req<T>(
   path: string,
-  opts: { method?: string; body?: unknown; auth?: boolean } = {},
+  opts: { method?: string; body?: unknown; auth?: boolean; base?: string } = {},
 ): Promise<T> {
-  const { method = "GET", body, auth = true } = opts;
+  const { method = "GET", body, auth = true, base = BASE } = opts;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (auth) {
     const t = getToken();
     if (t) headers.Authorization = `Bearer ${t}`;
   }
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`${base}${path}`, {
     method,
     headers,
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -71,6 +75,7 @@ export const api = {
       method: "POST",
       body: { email, password, name },
       auth: false,
+      base: AUTH_BASE,
     }),
 
   login: (email: string, password: string) =>
@@ -78,9 +83,13 @@ export const api = {
       method: "POST",
       body: { email, password },
       auth: false,
+      base: AUTH_BASE,
     }),
 
-  me: () => req<{ id: number; name: string; email: string }>("/auth/me"),
+  me: () =>
+    req<{ id: number; name: string; email: string }>("/auth/me", {
+      base: AUTH_BASE,
+    }),
 
   listAccounts: (status?: string) =>
     req<Account[]>(`/accounts${status ? `?status=${status}` : ""}`),
