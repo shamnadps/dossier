@@ -88,43 +88,56 @@ query "accounts/{account_id}/research" verb=POST {
       value = "You are a B2B sales research analyst. Using ONLY the search data below, produce a concise account brief for a salesperson about to reach out.\n\nCompany: " ~ $account.name ~ "\nDomain: " ~ ($account.domain|to_text) ~ "\n\nGOOGLE NEWS RESULTS (JSON):\n" ~ $news_json ~ "\n\nGOOGLE WEB RESULTS (JSON):\n" ~ $web_json ~ "\n\nKNOWLEDGE GRAPH (JSON):\n" ~ $kg_json ~ "\n\nReturn a SINGLE valid JSON object and nothing else, matching exactly:\n{\n  \"industry\": \"short label or null\",\n  \"signals\": [ { \"type\": \"news|hiring|funding|tech|other\", \"headline\": \"one line\", \"url\": \"source url from data or null\", \"source\": \"publication or null\", \"published_at\": \"date string or null\", \"relevance_score\": 0 } ],\n  \"summary_md\": \"2-3 sentences on what the company does and its current moment.\",\n  \"buying_signals_md\": \"2-4 lines starting with '- ', each tied to a signal above; if none, say so plainly.\",\n  \"recommended_action\": \"one specific next step.\",\n  \"draft_outreach\": \"a 90-120 word cold email: first line 'Subject: ...', then the body, referencing a real signal, no bracket placeholders.\"\n}\nRules: 4-8 signals, most relevant first, relevance_score 0-100. Never invent facts, URLs, or numbers not in the data. If data is thin, return fewer signals and say the picture is limited. Output must be strict JSON: no markdown fences, no trailing commas, no text before or after."
     }
 
-    // 5. Claude Messages API
+    // 5. Gemini - generate the brief as strict JSON
     api.request {
-      url = "https://api.anthropic.com/v1/messages"
+      url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
       method = "POST"
       params = {
-        model     : $env.ANTHROPIC_MODEL
-        max_tokens: 1600
-        messages  : [{role: "user", content: $prompt}]
+        contents        : [{parts: [{text: $prompt}]}]
+        generationConfig: {responseMimeType: "application/json", maxOutputTokens: 8192}
       }
       headers = []
-        |push:("x-api-key: " ~ $env.ANTHROPIC_API_KEY)
-        |push:"anthropic-version: 2023-06-01"
+        |push:("x-goog-api-key: " ~ $env.GEMINI_API_KEY)
         |push:"content-type: application/json"
       timeout = 60
     } as $ai_res
 
     // 6. Parse the model's JSON reply
+    var $ai_text {
+      value = ""
+    }
+    try_catch {
+      try {
+        var.update $ai_text {
+          value = $ai_res.response.result|get:"candidates"|first|get:"content"|get:"parts"|first|get:"text"
+        }
+      }
+      catch {
+        var.update $ai_text {
+          value = ""
+        }
+      }
+    }
+
     var $out {
       value = null
     }
     try_catch {
       try {
         var.update $out {
-          value = $ai_res.response.result|get:"content"|first|get:"text"|json_decode
+          value = $ai_text|json_decode
         }
       }
       catch {
-        throw {
-          name = "badresponse"
-          value = "The research model returned an unparseable response. Try again."
+        var.update $out {
+          value = null
         }
       }
     }
 
     precondition ($out != null && $out.summary_md != null) {
-      error_type = "badresponse"
-      error = "Research did not produce a brief. Try again."
+      error_type = "inputerror"
+      error = "The research model did not return a usable brief. Try again."
     }
 
     // 7. Backfill industry if we didn't have it
