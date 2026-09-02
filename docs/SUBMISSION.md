@@ -19,8 +19,8 @@ and turns them into a brief with cited buying signals and a drafted outreach
 email.
 
 ## Build story
-- **AI tools:** Claude Code (end to end — backend build via the Xano MCP,
-  React frontend, this write-up).
+- **AI tools:** a CLI-based AI coding agent, end to end — backend build via
+  the Xano MCP, the React frontend, and this write-up.
 - **Time to build:** ~1 day, solo.
 - **What would have taken much longer without AI + Xano:** auth, the database
   schema and migrations, external-API orchestration, and a real deploy target.

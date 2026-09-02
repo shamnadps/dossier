@@ -17,7 +17,7 @@ Built for the DevNetwork [API + Cloud + AI] Hackathon 2026 —
 | Backend | Xano — data model, auth, and the research function stack |
 | External data | SerpApi (`google_news` + `google` engines) |
 | AI | Google Gemini API (`gemini-3.6-flash`) |
-| Frontend | React + Vite + TypeScript, hosted on Xano static hosting |
+| Frontend | React + Vite + TypeScript, hosted on GitHub Pages |
 
 ## Repo layout
 
@@ -35,7 +35,7 @@ docs/
 ```sh
 cd web
 npm install
-echo "VITE_API_BASE=https://<your-xano>.xano.io/api:<main-group>" > .env.local
+cp .env.example .env.local   # then fill in your Xano API base URLs
 npm run dev
 ```
 
@@ -49,7 +49,5 @@ Required workspace environment variables:
 
 ## Deploy
 
-```sh
-cd web && npm run build        # -> web/dist
-# deploy web/dist to Xano static hosting (xano CLI)
-```
+Pushing to `main` builds `web/` and publishes it to GitHub Pages via
+`.github/workflows/deploy.yml`. Live: https://shamnadps.github.io/dossier/

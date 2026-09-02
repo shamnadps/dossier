@@ -1,4 +1,4 @@
-// Pull live web signals (SerpApi) and generate an AI account brief (Claude).
+// Pull live web signals (SerpApi) and generate an AI account brief (Gemini).
 // Clears any prior signals/brief so a re-run is a clean refresh.
 query "accounts/{account_id}/research" verb=POST {
   api_group = "App"

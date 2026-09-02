@@ -17,7 +17,7 @@ so the "Run research" moment is live.
 - Open the un-researched account. Point at the empty AI Brief card.
 - Click **Run research**. Talk over the spinner:
   > "Xano is calling SerpApi twice — Google News and web — for live results on
-  > this company, then handing them to Claude to write the brief. Nothing is
+  > this company, then handing them to Gemini to write the brief. Nothing is
   > pre-baked; this is happening now."
 - Results land. Walk the brief: Summary → Buying signals (each tied to a real
   headline) → Recommended next step → the drafted outreach email.
@@ -32,8 +32,8 @@ so the "Run research" moment is live.
 
 ## 2:10–2:45 — The build
 > "The entire backend is Xano — data model, auth, and the research workflow that
-> orchestrates SerpApi and Claude in one function stack. Frontend is a small
-> React app on Xano static hosting. Built solo with Claude Code in about a day.
+> orchestrates SerpApi and Gemini in one function stack. Frontend is a small
+> React app on GitHub Pages. Built solo in about a day with an AI coding agent.
 > Without Xano I'd have spent that day on auth, migrations, and a deploy target
 > instead of the thing that matters — the brief."
 
