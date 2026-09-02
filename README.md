@@ -49,5 +49,12 @@ Required workspace environment variables:
 
 ## Deploy
 
-Pushing to `main` builds `web/` and publishes it to GitHub Pages via
-`.github/workflows/deploy.yml`. Live: https://shamnadps.github.io/dossier/
+The built frontend (`web/dist`) is published to the `gh-pages` branch, served at
+https://shamnadps.github.io/dossier/ . To redeploy:
+
+```sh
+cd web && npm run build
+cd dist && git init -q && git checkout -b gh-pages && git add -A \
+  && git commit -qm deploy \
+  && git push -f https://github.com/shamnadps/dossier.git gh-pages
+```
