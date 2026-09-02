@@ -70,8 +70,7 @@ One current brief per account (re-run replaces).
 ## Environment variables (Xano workspace settings)
 
 - `SERPAPI_KEY`
-- `ANTHROPIC_API_KEY`
-- `ANTHROPIC_MODEL` = `claude-sonnet-5`
+- `GEMINI_API_KEY`
 
 ## API group: `auth`
 
@@ -112,27 +111,24 @@ Guard owner. Steps:
    `api_key=$SERPAPI_KEY`.
    Take `organic_results[].{title, link, snippet, source}` and
    `knowledge_graph` if present (for industry + description).
-4. **Claude call.** POST `https://api.anthropic.com/v1/messages`
-   headers: `x-api-key: $ANTHROPIC_API_KEY`, `anthropic-version: 2023-06-01`,
-   `content-type: application/json`.
+4. **Gemini call.** POST `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent`
+   headers: `x-goog-api-key: $GEMINI_API_KEY`, `content-type: application/json`.
    body:
    ```json
    {
-     "model": "$ANTHROPIC_MODEL",
-     "max_tokens": 1400,
-     "messages": [{ "role": "user", "content": "<PROMPT below>" }]
+     "contents": [{ "parts": [{ "text": "<PROMPT below>" }] }],
+     "generationConfig": { "responseMimeType": "application/json", "maxOutputTokens": 8192 }
    }
    ```
-   The prompt embeds the account name/domain + the JSON blobs from steps 2–3 and
-   asks for a single JSON object back (see `RESEARCH_PROMPT.md`).
-5. **Parse** the JSON from `content[0].text`.
+   `responseMimeType: application/json` forces a parseable object back.
+5. **Parse** the JSON from `candidates[0].content.parts[0].text`.
 6. **Write** `industry` back onto the account if returned and currently null.
 7. **Insert** each `signals[]` item from the model output.
 8. **Insert** one `briefs` row from `summary_md`, `buying_signals_md`,
    `recommended_action`, `draft_outreach`.
 9. Return the same shape as `GET /accounts/{id}`.
 
-Error handling: if SerpApi or Claude returns non-200, return a `502` with a
+Error handling: if SerpApi or Gemini returns non-200, return a `502` with a
 `message` the frontend can show; do not write partial data.
 
 ### `POST /accounts/{id}/activities`

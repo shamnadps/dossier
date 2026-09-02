@@ -3,7 +3,7 @@
 **The CRM account page that shows up to the meeting already briefed.**
 
 Add a company by name or domain, hit **Run research**, and Dossier pulls live
-Google News + web results (SerpApi) and turns them into an AI account brief:
+Google News + web results (SerpApi) and turns them into an AI account brief (Gemini):
 a summary, cited buying signals, a recommended next step, and a drafted outreach
 email — with every claim traceable to a source URL.
 
@@ -16,7 +16,7 @@ Built for the DevNetwork [API + Cloud + AI] Hackathon 2026 —
 |---|---|
 | Backend | Xano — data model, auth, and the research function stack |
 | External data | SerpApi (`google_news` + `google` engines) |
-| AI | Claude Messages API (`claude-sonnet-5`) |
+| AI | Google Gemini API (`gemini-3.6-flash`) |
 | Frontend | React + Vite + TypeScript, hosted on Xano static hosting |
 
 ## Repo layout
@@ -25,7 +25,7 @@ Built for the DevNetwork [API + Cloud + AI] Hackathon 2026 —
 web/            React frontend
 docs/
   BACKEND_SPEC.md     Xano tables + endpoints (source of truth for the build)
-  RESEARCH_PROMPT.md  the Claude prompt used by /accounts/{id}/research
+  RESEARCH_PROMPT.md  the Gemini prompt used by /accounts/{id}/research
   DEMO_SCRIPT.md      video script
   SUBMISSION.md       Devpost write-up
 ```
@@ -45,8 +45,7 @@ The backend is built in a Xano workspace from `docs/BACKEND_SPEC.md`.
 Required workspace environment variables:
 
 - `SERPAPI_KEY`
-- `ANTHROPIC_API_KEY`
-- `ANTHROPIC_MODEL` = `claude-sonnet-5`
+- `GEMINI_API_KEY`
 
 ## Deploy
 

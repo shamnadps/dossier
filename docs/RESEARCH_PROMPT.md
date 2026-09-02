@@ -1,4 +1,4 @@
-# Claude prompt used by `POST /accounts/{id}/research`
+# Gemini prompt used by `POST /accounts/{id}/research`
 
 Sent as a single user message. `{{...}}` placeholders are string-substituted in
 XanoScript before the External API Request.

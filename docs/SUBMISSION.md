@@ -30,7 +30,7 @@ email.
 ## Where Xano does the real work
 The `POST /accounts/{id}/research` function stack is the whole product: it clears
 stale data, calls SerpApi twice (Google News + web) via External API Requests,
-passes the results to Claude's Messages API, parses the returned JSON, and writes
+passes the results to Google's Gemini API, parses the returned JSON, and writes
 `signals` + a `brief` in one transaction. Auth, ownership guards, the data model,
 and static hosting for the frontend are all Xano too. No separate backend
 service exists.
