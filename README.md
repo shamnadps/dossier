@@ -26,7 +26,8 @@ web/            React frontend
 docs/
   BACKEND_SPEC.md     Xano tables + endpoints (source of truth for the build)
   RESEARCH_PROMPT.md  the Gemini prompt used by /accounts/{id}/research
-  DEMO_SCRIPT.md      video script
+  DEMO_SCRIPT.md      video script + narration
+  BLOG.md            build-story blog post
   SUBMISSION.md       Devpost write-up
 ```
 
