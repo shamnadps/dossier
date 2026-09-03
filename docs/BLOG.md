@@ -64,8 +64,8 @@ were the top news results that morning, not because anything was baked in.
 
 ## The pivot
 
-The first version called Anthropic's API for the brief. The key came back with a
-zero balance, so rather than ask anyone to top up a card mid-hackathon, I swapped
+The first version called a different hosted LLM API for the brief. The key came
+back with a zero balance, so rather than top up a card mid-hackathon, I swapped
 the one `api.request` block to Google's Gemini API. `gemini-3.6-flash` with
 `responseMimeType: "application/json"` turned out better for this anyway — the
 model is forced to return a parseable object, so the "unparseable response" path
