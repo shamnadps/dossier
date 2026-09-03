@@ -6,3 +6,4 @@ dist
 env.yaml
 *.secret
 secrets.local.md
+dossier_demo.mp4
