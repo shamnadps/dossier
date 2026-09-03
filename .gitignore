@@ -7,3 +7,10 @@ env.yaml
 *.secret
 secrets.local.md
 dossier_demo.mp4
+video/audio/
+video/shots/
+video/segvid/
+video/qa/
+video/concat.txt
+video/aconcat.txt
+video/*.mp4
